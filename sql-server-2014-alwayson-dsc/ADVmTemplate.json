@@ -107,6 +107,15 @@
     "vmSize": {
       "type": "string",
       "allowedValues": [
+        "Standard_A0",
+        "Standard_A1",
+        "Standard_A2",
+        "Standard_A3",
+        "Standard_A4",
+        "Standard_A5",
+        "Standard_A6",
+        "Standard_A7",
+        "Standard_A8",
         "Standard_D1",
         "Standard_DS1",
         "Standard_D2",
@@ -158,16 +167,19 @@
   },
   "variables": {
     "windowsDiskSize": 128,
-    "publicLBName": "ADPublicLoadBalancer",
+    "publicLBName": "lb-iis-preprod",
     "publicIPAddressName": "[concat(parameters('availabilitySetName'), 'PublicIp')]",
-    "lbFE": "ADLBFE",
-    "lbBE": "ADLBBE",
-    "rpdNAT": "ADRDPNAT",
+    "lbFE": "lbIisFe",
+    "lbBE": "lbIisBe",
+    "rpdNAT1": "ADRDPNAT",
+    "rpdNAT2": "ADRDPNAT",
     "publiclbID": "[resourceId('Microsoft.Network/loadBalancers',variables('publicLBName'))]",
     "publiclbFEConfigID": "[concat(variables('publiclbID'),'/frontendIPConfigurations/',variables('lbFE'))]",
-    "rdpPort": 3389,
+    "rdpPort1": 5001,
+    "rdpPort2": 5002,
     "publicBEAddressPoolID": "[concat(variables('publiclbID'),'/backendAddressPools/',variables('lbBE'))]",
-    "adRDPNATRuleID": "[concat(variables('publiclbID'),'/inboundNatRules/',variables('rpdNAT'))]",
+    "adRDPNATRule1ID": "[concat(variables('publiclbID'),'/inboundNatRules/',variables('rpdNAT1'))]",
+    "adRDPNATRule2ID": "[concat(variables('publiclbID'),'/inboundNatRules/',variables('rpdNAT2'))]",
     "adDNicName": "ADMachine-Nic-",
     "vmContainerName": "vhds"
   },
@@ -225,13 +237,25 @@
         ],
         "inboundNatRules": [
           {
-            "name": "[variables('rpdNAT')]",
+            "name": "[variables('rpdNAT1')]",
             "properties": {
               "frontendIPConfiguration": {
                 "id": "[variables('publiclbFEConfigID')]"
               },
               "protocol": "tcp",
-              "frontendPort": "[variables('rdpPort')]",
+              "frontendPort": "[variables('rdpPort1')]",
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "[variables('rpdNAT2')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('publiclbFEConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": "[variables('rdpPort2')]",
               "backendPort": 3389,
               "enableFloatingIP": false
             }
@@ -264,7 +288,7 @@
               ],
               "loadBalancerInboundNatRules": [
                 {
-                  "id": "[variables('adRDPNATRuleID')]"
+                  "id": "[variables('adRDPNATRule1ID')]"
                 }
               ]
             }
@@ -289,7 +313,17 @@
               "privateIPAddress": "[parameters('secondaryIpAddress')]",
               "subnet": {
                 "id": "[parameters('subnetUri')]"
-              }
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[variables('publicBEAddressPoolID')]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[variables('adRDPNATRule2ID')]"
+                }
+              ]
             }
           }
         ]

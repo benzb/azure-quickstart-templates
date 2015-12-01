@@ -5,11 +5,11 @@ This template will create a SQL Server 2014 Always On Availability Group using t
 +	A Virtual Network
 +	Three Storage Accounts
 +	One external and one internal load balancer
-+	Two VMs configured as Domain Controllers for a new forest with a single domain
++	Two VMs running IIS with an availability group and an external load balancer
 +	Three VMs in a Windows Server Cluster, two VMs run SQL Server 2014 with an availability group and the third is a File Share Witness for the Cluster
-+	Two Availability Sets one for the AD VMs, the other for the SQL and Witness VMs, the second Availability Set is configured with three Update Domains and three Fault Domains
++	An Availability Sets for the SQL and Witness VMs, configured with three Update Domains and three Fault Domains
 
-The external load balancer creates an RDP NAT rule to allow connectivity to the first VM created, in order to access other VMs in the deployment this VM should be used as a jumpbox.
+The external load balancer creates RDP NAT rules to allow connectivity to both front-end IIS VMs, in order to access other VMs in the deployment these VMs should be used as a jumpbox.
 
 A SQL Server always on listener is created using the internal load balancer.
 
@@ -19,21 +19,20 @@ This template is entirely serial due to some issues between the platform agent a
 
 ## Notes
 
-+	The default settings for storage are to deploy using **premium storage**, the AD VMs use a P10 Disk and the SQL VMs use two P30 disks each, these sizes can be changed by changing the relevant variables. In addition there is a P10 Disk used for each VMs OS Disk.
++	The default settings for storage are to deploy using **standard storage**, the AD VMs use a P10 Disk and the SQL VMs use two P30 disks each, these sizes can be changed by changing the relevant variables. In addition there is a P10 Disk used for each VMs OS Disk.
 
 + 	In default settings for compute require that you have at least 19 cores of free quota to deploy.
 
 + 	The images used to create this deployment are
-	+ 	AD - Latest Windows Server 2012 R2 Image
 	+ 	SQL Server - Latest SQL Server 2014 on Windows Server 2012 R2 Image
-	+ 	Witness - Latest Windows Server 2012 R2 Image
+	+ 	Witness and IIS - Latest Windows Server 2012 R2 Image
 
 + 	The image configuration is defined in variables - details below - but the scripts that configure this deployment have only been tested with these versions and may not work on other images.
 
 
 Click the button below to deploy from the portal
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Fazure-quickstart-templates%2Fmaster%2Fsql-server-2014-alwayson-dsc%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fbenzb%2Fazure-quickstart-templates%2Fmaster%2Fsql-server-2014-alwayson-dsc%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
