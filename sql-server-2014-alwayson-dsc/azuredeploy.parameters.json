@@ -3,22 +3,22 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "newStorageAccountNamePrefix": {
-      "value": "ftneu"
+      "value": "sqlsa#####"
     },
 
     "vmNamePrefix": {
-      "value": "ftnesvu"
+      "value": "vm#####"
     },
 
      "domainName": {
-      "value": "spa-ft.local"
+      "value": "contoso.com"
     },
 
     "dnsPrefix": {
-      "value": "ftc#####"
+      "value": "c#####"
     },
     "location": {
-      "value": "North Europe"
+      "value": "East US 2"
     },
     "adminPassword": {
       "value": "P!1#####"
